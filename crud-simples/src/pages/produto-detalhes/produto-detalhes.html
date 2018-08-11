@@ -1,0 +1,61 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title> Detalhes </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+    <ion-card>
+        <ion-item>
+          <ion-avatar item-start>
+              <ion-icon name="briefcase"></ion-icon>
+          </ion-avatar>
+          <h2> {{ produto.descricao }} # {{ produto.id }}</h2> 
+          <p>registrado em...</p>
+        </ion-item>
+      
+        <!-- <img src="img/imagem.jpg"> -->
+      
+        <ion-card-content>
+          <p>Detalhes do produto...</p>
+          <div><strong> Preço: </strong> {{ produto.valor }}</div>
+          <div><strong> Qtde.: </strong> {{ produto.quantidade }} </div>
+        </ion-card-content>
+      
+        <ion-row> <!-- inicia a linha -->
+
+          <!-- 1ª Coluna -->
+          <ion-col>
+	    <!-- botão para editar -->
+            <button ion-button icon-start clear small (click)="editarProduto(produto)">
+              <ion-icon name="create"></ion-icon>
+              <div> editar </div>
+            </button>
+          </ion-col> <!-- Fim 1ª Coluna -->
+
+          <!-- 2ª Coluna -->
+          <ion-col>
+	    <!-- botão para excluir -->
+            <button ion-button icon-start clear small (click)="excluirProduto(produto)">
+              <ion-icon name="close"></ion-icon>
+              <div> deletar </div>
+            </button>
+          </ion-col> <!-- Fim 2ª Coluna -->
+
+          <!-- 3ª Coluna -->
+          <ion-col>
+            <ion-note ion-button icon-start clear small>
+              <ion-icon name="calendar"></ion-icon>
+              <div>{{ date }}</div>
+            </ion-note>
+          </ion-col> <!-- Fim 3ª Coluna -->
+
+        </ion-row> <!-- final da linha -->
+      
+      </ion-card>
+      
+</ion-content>

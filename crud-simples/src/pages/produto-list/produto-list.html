@@ -1,0 +1,31 @@
+<ion-header>
+
+  <!-- color muda a cor do background -->
+  <ion-navbar color="primary">
+    <ion-title>Produtos</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <!-- componente para listas -->
+  <ion-list>
+    <ion-item *ngFor="let produto of produtos">
+      <ion-avatar item-start>
+        <ion-icon name="archive"></ion-icon>
+      </ion-avatar>
+      <h2> {{ produto.descricao }}</h2>
+      <p> {{ produto.valor }} </p>
+      <button ion-button clear item-end (click)="detalhesProduto(produto)">Ver</button>
+    </ion-item>
+  </ion-list> <!-- fim lista de produtos -->
+
+  <!-- botão para adicionar um novo produto -->
+  <ion-fab bottom right>
+    <button ion-fab color="primary" (click)="novoProduto()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+
+</ion-content>
