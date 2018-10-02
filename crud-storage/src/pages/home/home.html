@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Exemplo com Ionic Storage
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-list>
+
+    <!-- o ngClass é uma classe para SCSS -->
+    <ion-card *ngFor="let item of contatos" [ngClass]="{ 'item-inativo': !item.contato.ativo }">
+
+      <ion-card-header>
+        <h1> {{ item.contato.nome }} </h1>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <p>
+           {{ item.contato.telefone }} - {{ item.contato.nascimento | date:'dd/MM/yyyy' }}
+        </p>
+      </ion-card-content>
+
+      <ion-row text-center>
+
+        <ion-col>
+          <button ion-button icon-left clear small (click)="editContato(item)">
+            <ion-icon name="create"></ion-icon>
+            <div>Editar</div>
+          </button>
+        </ion-col>
+
+        <ion-col>
+          <button ion-button icon-left clear small (click)="removeContato(item)">
+            <ion-icon name="trash"></ion-icon>
+            <div>Excluir</div>
+          </button>
+        </ion-col>
+
+        <ion-col>
+          <a href="tel:{{ item.contato.telefone }}" ion-button icon-left clear small>
+            <ion-icon name="call"></ion-icon>
+            <div>Ligar</div>
+          </a>
+
+        </ion-col>
+
+      </ion-row>
+
+    </ion-card>
+
+  </ion-list>
+
+  <ion-fab right bottom>
+    <button ion-button color="primary" (click)="addContato()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>

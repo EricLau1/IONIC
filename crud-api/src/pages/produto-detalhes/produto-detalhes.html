@@ -1,0 +1,66 @@
+<ion-header>
+
+  <ion-navbar color="dark">
+    <ion-title>Detalhes</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+
+<ion-content padding>
+
+  <ion-list>
+    <ion-card>
+      
+      <ion-card-header text-center class="card-header">
+          {{ produto.Descricao }}
+      </ion-card-header>
+
+      <ion-card-content text-center>
+
+        <ion-row>
+          <ion-col>
+              <ion-icon name="cart"></ion-icon> {{ produto.Quantidade }}
+          </ion-col>
+
+          <ion-col>
+              <ion-icon name="logo-bitcoin"></ion-icon> {{ produto.Valor }}
+          </ion-col>
+
+        </ion-row>
+
+        <ion-row>
+
+            <ion-col>
+              <button ion-button icon-right clear small (click)="update()"> 
+                <div>
+                  update
+                </div>
+                <ion-icon name="create"></ion-icon>
+              </button>
+            </ion-col>
+    
+            <ion-col>
+              <button ion-button icon-right clear color="danger" small (click)="remove()"> 
+                <div>
+                  excluir
+                </div>
+                <ion-icon name="trash"></ion-icon>
+    
+              </button>
+            </ion-col>
+      
+          </ion-row>
+        
+      </ion-card-content>
+  
+
+
+    </ion-card>
+
+  </ion-list>
+
+</ion-content>
+
+

@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar color="dark">
+    <ion-title>
+      Produtos
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <h1>Lista de produtos</h1>
+
+  <ion-list>
+
+    <ion-item *ngFor="let produto of produtos">
+      <ion-icon name="logo-android" item-start></ion-icon>
+        <div  color="light" block (click)="details(produto)">
+          <strong>{{ produto.Descricao }} </strong>
+        </div>
+        <ion-icon name="arrow-dropright" item-end></ion-icon>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-fab top right edge>
+      <button ion-fab mini (click)="create()">
+        <ion-icon name="add" ></ion-icon>
+      </button>
+  </ion-fab>
+
+
+</ion-content>

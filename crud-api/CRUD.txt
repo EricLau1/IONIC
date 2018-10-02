@@ -1,0 +1,601 @@
+CRUD Ionic 4
+
+Consumindo uma API WEB 
+
+# ionic start ionic-crud-api blank
+
+Criar a página para ver detalhes do produto:
+
+# ionic g page produto-detalhes
+
+Criar a página para cadastrar novo produto:
+
+# ionic g page produto-create
+
+Criar uma página para editar um campo do produto:
+
+# ionic g page produto-edit
+
+importar o HttpClientModule no arquivo AppModule.
+
+"app.module.ts":
+
+import { BrowserModule } from '@angular/platform-browser';
+import { ErrorHandler, NgModule } from '@angular/core';
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
+
+import { MyApp } from './app.component';
+import { HomePage } from '../pages/home/home';
+
+// adicionados manualmente
+import { HttpClientModule } from '@angular/common/http';
+import { ProdutoProvider } from '../providers/produto/produto';
+
+@NgModule({
+  declarations: [
+    MyApp,
+    HomePage
+  ],
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(MyApp),
+    HttpClientModule // adicionado manualmente
+  ],
+  bootstrap: [IonicApp],
+  entryComponents: [
+    MyApp,
+    HomePage
+  ],
+  providers: [
+    StatusBar,
+    SplashScreen,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    ProdutoProvider
+  ]
+})
+export class AppModule {}
+
+
+
+criar o provider para consumir a api web:
+
+# ionic g provider produto
+
+Criar os métodos de comunicação com api no ProdutoProvider:
+
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class ProdutoProvider {
+
+  produtosURL = "http://localhost:3000/produtos";
+
+  key: number;
+
+  constructor(public http: HttpClient) { 
+  
+    // pega o ultimo Id da lista de objetos
+    this.latId();
+
+  
+  }
+
+  getProdutos() {
+
+    return this.http.get<Array<Produto>>(this.produtosURL);
+
+  }
+
+  postProduto(produto: Produto) {
+
+    let data = {
+      "Id": produto.Id,
+      "Descricao": produto.Descricao,
+      "Quantidade": parseInt(""+produto.Quantidade),
+      "Valor": parseFloat(produto.Valor +"")
+    }
+
+    console.log(data);
+
+    let uri =  `${this.produtosURL}/create`;
+
+    return this.http.post( uri ,JSON.stringify(data));
+
+  }
+
+  putProduto(produto: Produto) {
+
+    
+    let uri = `${this.produtosURL}/update/${produto.Id}`;
+
+    let dados = {
+      "Id": parseInt(produto.Id + ""),
+      "Descricao": produto.Descricao,
+      "Quantidade": parseInt(produto.Quantidade + ""),
+      "Valor": parseFloat(produto.Valor + "")
+    };
+
+    return this.http.post( uri, JSON.stringify(dados));
+
+  }
+
+
+  deleteProduto(id: number) {
+    
+    let uri = `${this.produtosURL}/delete/${id}`;
+
+    return this.http.get(uri);
+
+  }
+
+  latId() {
+    return this.getProdutos().subscribe(
+      (dados)=>{ this.key = dados.length; console.log(this.key); }
+    );
+  }
+
+  
+
+}
+
+export class Produto {
+  Id: number;
+  Descricao: string;
+  Quantidade: number;
+  Valor: number;
+}
+
+
+Importar o provider no home.ts e alterar o home.html para mostrar a lista de produtos.
+
+"home.ts":
+
+import { Component } from '@angular/core';
+import { NavController } from 'ionic-angular';
+
+// adicionados manualmente
+import { ProdutoProvider, Produto } from '../../providers/produto/produto';
+import { ProdutoCreatePage } from '../produto-create/produto-create';
+
+@Component({
+  selector: 'page-home',
+  templateUrl: 'home.html'
+})
+export class HomePage {
+
+  produtos: Array<Produto>;
+  
+  constructor(public navCtrl: NavController, private provider: ProdutoProvider) {
+
+    this.provider.getProdutos().subscribe((dados) => {
+      this.produtos = dados;
+      console.log(dados);
+    });
+
+  }
+
+  create() {
+
+    this.navCtrl.push("ProdutoCreatePage");
+
+  }
+
+  details(produto: Produto) {
+
+    this.navCtrl.push("ProdutoDetalhesPage", {produto: produto} );
+
+  }
+
+}
+
+
+"home.html":
+
+<ion-header>
+  <ion-navbar color="dark">
+    <ion-title>
+      Produtos
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <h1>Lista de produtos</h1>
+
+  <ion-list>
+
+    <ion-item *ngFor="let produto of produtos">
+      <ion-icon name="logo-android" item-start></ion-icon>
+        <div  color="light" block (click)="details(produto)">
+          <strong>{{ produto.Descricao }} </strong>
+        </div>
+        <ion-icon name="arrow-dropright" item-end></ion-icon>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-fab top right edge>
+      <button ion-fab mini (click)="create()">
+        <ion-icon name="add" ></ion-icon>
+      </button>
+  </ion-fab>
+
+
+</ion-content>
+
+
+Codificando a paǵina para cadastrar produtos:
+
+"produto-create.ts":
+
+import { Component} from '@angular/core';
+// ToastController adicionado manualmente
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+
+// adiciondos manualmente
+import { Produto, ProdutoProvider } from '../../providers/produto/produto';
+import { HomePage } from '../home/home';
+
+@IonicPage()
+@Component({
+  selector: 'page-produto-create',
+  templateUrl: 'produto-create.html',
+})
+export class ProdutoCreatePage {
+
+  model: Produto;
+ 
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+    private provider: ProdutoProvider, private toast: ToastController) {
+
+    this.model = {
+      Id: (this.provider.key + 1),
+      Descricao: "",
+      Quantidade: null,
+      Valor: null
+    };
+
+    this.provider.key++;
+ 
+  }
+
+  save() {
+
+    this.provider.postProduto(this.model).subscribe(
+      (rep) => {
+        this.toast.create({ message: "produto criado com sucesso!", duration: 3000, position: 'bottom' }).present();
+        this.navCtrl.setRoot(HomePage);
+      }
+    );
+
+  }
+
+
+}
+
+
+"produto-create.html":
+
+<ion-header>
+
+  <ion-navbar color="dark">
+    <ion-title>Novo produto</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+
+  <ion-list>
+
+
+    <ion-item>
+      <ion-label stacked> Descrição</ion-label>
+      <ion-input type="text" name="descricao" [(ngModel)]="model.Descricao"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked> Quantidade</ion-label>
+      <ion-input type="number" name="quantidade" [(ngModel)]="model.Quantidade"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked>Valor</ion-label>
+      <ion-input type="number" name="valor" [(ngModel)]="model.Valor"></ion-input>
+    </ion-item>
+
+
+  </ion-list>
+
+    <button ion-button block color="dark" (click)="save()">Salvar</button>
+</ion-content>
+
+
+Codigoficando a página para ver os detalhes e exclusão do produto:
+
+"produto-detalhes.ts":
+
+import { Component } from '@angular/core';
+// ToastController adicionado manualmente
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+
+// adicionados manualmente
+import { Produto, ProdutoProvider } from '../../providers/produto/produto';
+import { AlertController } from 'ionic-angular';
+import { HomePage } from '../home/home';
+
+@IonicPage()
+@Component({
+  selector: 'page-produto-detalhes',
+  templateUrl: 'produto-detalhes.html',
+})
+export class ProdutoDetalhesPage {
+
+  produto: Produto;
+  key: number; // chave que guarda o Id do produto
+
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+    private provider: ProdutoProvider, public alertController: AlertController,
+    private toast: ToastController ) {
+
+    this.produto = this.navParams.data.produto || {};
+    this.key = this.produto.Id;
+    console.log(this.produto);
+
+  }
+
+  remove() {
+
+    this.showConfirm();
+  
+  }
+
+  showConfirm() {
+
+    const confirm = this.alertController.create({
+      title: 'Excluir produto',
+      message: 'deseja excluir produto permanentemente?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: () => {
+            console.log('operação cancelada');
+            this.toast.create({ message: "O produto esta intacto.", duration: 3000,
+            position: 'bottom' }).present();
+          }
+        },
+        {
+          text: 'Ok',
+          handler: () => {
+            console.log('excluindo...');
+
+            this.provider.deleteProduto(this.key).subscribe((response) => {
+
+              console.log(response);
+
+              this.toast.create({ message: "exluido com sucesso!", duration: 3000,
+                position: 'bottom' }).present();
+
+              this.navCtrl.setRoot(HomePage);
+              
+
+            });
+          }
+        }
+      ]
+    });
+    
+   confirm.present();
+
+  }
+
+  update() {
+
+    this.navCtrl.push("ProdutoEditPage", { produto: this.produto });
+
+  }
+
+
+}
+
+
+"produto-detalhes.html":
+
+<ion-header>
+
+  <ion-navbar color="dark">
+    <ion-title>Detalhes</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+
+<ion-content padding>
+
+  <ion-list>
+    <ion-card>
+      
+      <ion-card-header text-center class="card-header">
+          {{ produto.Descricao }}
+      </ion-card-header>
+
+      <ion-card-content text-center>
+
+        <ion-row>
+          <ion-col>
+              <ion-icon name="cart"></ion-icon> {{ produto.Quantidade }}
+          </ion-col>
+
+          <ion-col>
+              <ion-icon name="logo-bitcoin"></ion-icon> {{ produto.Valor }}
+          </ion-col>
+
+        </ion-row>
+
+        <ion-row>
+
+            <ion-col>
+              <button ion-button icon-right clear small (click)="update()"> 
+                <div>
+                  update
+                </div>
+                <ion-icon name="create"></ion-icon>
+              </button>
+            </ion-col>
+    
+            <ion-col>
+              <button ion-button icon-right clear color="danger" small (click)="remove()"> 
+                <div>
+                  excluir
+                </div>
+                <ion-icon name="trash"></ion-icon>
+    
+              </button>
+            </ion-col>
+      
+          </ion-row>
+        
+      </ion-card-content>
+  
+
+
+    </ion-card>
+
+  </ion-list>
+
+</ion-content>
+
+
+Codificando a página para atualizar os dados do produto.
+
+"produto-edit.ts":
+
+import { Component } from '@angular/core';
+// ToastController adicionado manualmente
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+
+// adicionados manualmente
+import { Produto, ProdutoProvider } from '../../providers/produto/produto';
+import { HomePage } from '../home/home';
+import { AlertController } from 'ionic-angular';
+
+
+@IonicPage()
+@Component({
+  selector: 'page-produto-edit',
+  templateUrl: 'produto-edit.html',
+})
+export class ProdutoEditPage {
+
+  produto: Produto;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+    private provider: ProdutoProvider, private toast: ToastController,
+    private alertController: AlertController) {
+  
+    this.produto = this.navParams.data.produto || {};
+
+    console.log(this.produto);
+
+  }
+
+  updateProduto() {
+    this.showConfirm();
+  }
+
+  showConfirm() {
+
+    const confirm = this.alertController.create({
+      title: 'Atualizando produto',
+      message: 'deseja atualizar produto permanentemente?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: () => {
+            console.log('operação cancelada');
+            this.toast.create({ message: "O produto não foi modificado.", duration: 3000,
+            position: 'bottom' }).present();
+          }
+        },
+        {
+          text: 'Ok',
+          handler: () => {
+            console.log('atualizando...');
+
+            this.provider.putProduto(this.produto).subscribe((response) => {
+
+              console.log(response);
+
+              this.toast.create({ message: "atualizado com sucesso!", duration: 3000,
+                position: 'bottom' }).present();
+
+              this.navCtrl.setRoot(HomePage);
+              
+            });
+          }
+        }
+      ]
+    });
+    
+   confirm.present();
+
+  }
+
+
+
+}
+
+
+"produto-edit.html":
+
+<ion-header>
+
+  <ion-navbar color="dark">
+    <ion-title>Editar produto</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list *ngIf="produto">
+
+    <ion-item>
+      <ion-label>Descrição</ion-label>
+      <ion-input type="text" name="Descricao" [(ngModel)]="produto.Descricao"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Quantidade</ion-label>
+      <ion-input type="number" name="Quantidade" [(ngModel)]="produto.Quantidade"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Valor</ion-label>
+      <ion-input type="number" name="Valor" [(ngModel)]="produto.Valor"></ion-input>
+    </ion-item>
+
+  </ion-list>
+
+  <button ion-button icon-right (click)="updateProduto()">
+      <div>salvar</div>
+      <ion-icon name="checkmark-circle"></ion-icon>
+  </button>
+
+</ion-content>
+
+
+/* end... */
+
+
+

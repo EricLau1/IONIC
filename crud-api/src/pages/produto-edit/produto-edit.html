@@ -1,0 +1,36 @@
+<ion-header>
+
+  <ion-navbar color="dark">
+    <ion-title>Editar produto</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list *ngIf="produto">
+
+    <ion-item>
+      <ion-label>Descrição</ion-label>
+      <ion-input type="text" name="Descricao" [(ngModel)]="produto.Descricao"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Quantidade</ion-label>
+      <ion-input type="number" name="Quantidade" [(ngModel)]="produto.Quantidade"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Valor</ion-label>
+      <ion-input type="number" name="Valor" [(ngModel)]="produto.Valor"></ion-input>
+    </ion-item>
+
+  </ion-list>
+
+  <button ion-button icon-right (click)="updateProduto()">
+      <div>salvar</div>
+      <ion-icon name="checkmark-circle"></ion-icon>
+  </button>
+
+</ion-content>

@@ -32,13 +32,12 @@
 
 	\> ionic start myApp blank
 
-
-	Template com icones de home, estrela e coração:
+	Template com opções na barra inferior:
 
 	\> ionic start myApp tabs
 	
 
-	Template com menu de opções:
+	Template com menu de opções lateral:
 
 	\> ionic start myApp sidemenu
 

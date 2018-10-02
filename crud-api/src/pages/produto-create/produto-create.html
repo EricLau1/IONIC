@@ -1,0 +1,35 @@
+<ion-header>
+
+  <ion-navbar color="dark">
+    <ion-title>Novo produto</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+
+  <ion-list>
+
+
+    <ion-item>
+      <ion-label stacked> Descrição</ion-label>
+      <ion-input type="text" name="descricao" [(ngModel)]="model.Descricao"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked> Quantidade</ion-label>
+      <ion-input type="number" name="quantidade" [(ngModel)]="model.Quantidade"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked>Valor</ion-label>
+      <ion-input type="number" name="valor" [(ngModel)]="model.Valor"></ion-input>
+    </ion-item>
+
+
+  </ion-list>
+
+    <button ion-button block color="dark" (click)="save()">Salvar</button>
+</ion-content>
