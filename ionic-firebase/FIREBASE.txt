@@ -1,0 +1,456 @@
+	ionic-crud
+
+	Pré requisitos: ter um projeto iniciado no Firebase: https://firebase.google.com/?hl=pt-br
+	
+	Criando projeto firebase:
+
+	-> Clique na opção "Ir para o console"
+	-> Clique em "Adicionar projeto"
+	-> Nomeie o projeto
+	-> Pronto vamos começar!
+
+	iniciar projeto:
+
+\> ionic start firebasecrud blank
+
+	instalação das dependencias:
+
+\> cd firebasecrud
+
+\> npm install firebase angularfire2 --save
+
+	criando um provider de contatos:
+
+\> ionic g provider contato
+
+
+	criar a pagina de contatos:
+
+\> ionic g page contato
+
+	Fazer as importações no arquivo app.module.ts:
+
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+
+	E no parametro imports adicionar os modulos junto 
+	com os parametros gerados do projeto no firebase:
+
+imports: [
+    BrowserModule,
+
+    IonicModule.forRoot(MyApp),
+
+    // adicionado manualmente
+    AngularFireModule.initializeApp({
+
+      //parametros abaixo gerados do projeto no firebase
+
+      apiKey: "AIzaSyA8gkanaIl54HK3wJ4jpNK8fGoIb39Wm-Q",
+      authDomain: "ionic-crud-e10bf.firebaseapp.com",
+      databaseURL: "https://ionic-crud-e10bf.firebaseio.com",
+      projectId: "ionic-crud-e10bf",
+      storageBucket: "ionic-crud-e10bf.appspot.com",
+      messagingSenderId: "416412136563"
+
+    }),
+    AngularFireDatabaseModule // adicionado manualmente
+  ]
+
+	Abrir o arquivo home.ts da pagina home.
+	
+	Criar o método para abrir a página de contatos.
+
+Conteudo do arquivo:
+
+import { Component } from '@angular/core';
+import { NavController } from 'ionic-angular';
+
+@Component({
+  selector: 'page-home',
+  templateUrl: 'home.html'
+})
+export class HomePage {
+
+  constructor(public navCtrl: NavController) {
+
+  }
+
+  // criado manualmente
+  novoContato() {
+    this.navCtrl.push("ContatoPage");
+  }
+
+}
+ 
+ 
+	Abrir o arquivo HTML da pagina home.
+
+	Adicionar um botão para a pagina de contados no arquivo home.html.
+
+Conteudo do home.html:
+
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Contatos
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <!-- Adicionado manualmente ~ botão para a pagina de contato -->
+  <ion-fab bottom right>
+    <button ion-fab color="primary" (click)="novoContato()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+
+</ion-content>
+
+	Acessar o arquivo contato.ts da pasta Providers.
+
+	Fazer o import do AngularFireDatabase:
+
+import { AngularFireDatabase } from 'angularfire2/database';
+
+	
+Conteudo do arquivo:
+
+import { Injectable } from '@angular/core';
+
+// adicionado manualmente
+import { AngularFireDatabase } from 'angularfire2/database';
+
+@Injectable()
+export class ContatoProvider {
+
+  private PATH = 'contatos/';
+
+  constructor(private db: AngularFireDatabase) {
+
+  }
+
+  // criado manualmente ~ pega a lista de contatos
+  getContatos() {
+
+    return this.db.list(this.PATH)
+      .snapshotChanges()
+      .map(changes => {
+        return changes.map(contato => ({
+          key: contato.payload.key, 
+          ...contato.payload.val()
+        }));
+      });
+  }
+
+  // criado manualmente ~ pega um contato pela chave
+  getContato(key : string) {
+
+    return this.db.object(this.PATH + key)
+      .snapshotChanges()
+      .map( contato => {
+        return { key: contato.key, ...contato.payload.val() };
+      });
+
+  }
+
+  // criado manualmente ~ salvar contato
+  salvar(contato : any) {
+
+    return new Promise( (resolve, reject) => {
+      
+      if (contato.key) {
+
+        // Edit
+        this.db.list(this.PATH)
+          .update(contato.key, { nome : contato.nome, tel : contato.tel  } )
+          .then( () => resolve() )
+          .catch( (e) => reject(e) ); 
+
+          /* 
+            Outra forma de editar utilizando o SET o objeto é substituido
+            pelo objeto modificado podendo conter novos parametros.
+            No Update apenas os valores passados como parametro são alterados.
+
+          this.db.list(this.PATH)
+            .set(contato.key, { nome : contato.nome, tel : contato.tel  } )
+            .then( () => resolve() )
+            .catch( (e) => reject(e) );
+
+          */
+
+      } else {
+
+        // New insert
+        this.db.list(this.PATH)
+        .push( { nome : contato.nome, tel : contato.tel  } )
+        .then( (result : any) => resolve(result.key) ); 
+      }
+
+    });
+
+  }
+
+  // criado manualmente ~ remover contato
+  remover(key : string) {
+    return this.db.list(this.PATH).remove(key);
+  }
+
+} // fim codigo
+
+
+	Abrir o arquivo contato.ts do pagina contato.
+
+	Fazer as importações:
+
+import { ContatoProvider } from '../../providers/contato/contato';
+import { FormBuilder, FormGroup, Validator } from '@angular/forms';
+
+	criar as variaveis:
+
+  titulo : string;
+  form : FormGroup;
+  contato : any;
+
+conteudo do arquivo:
+
+import { Component } from '@angular/core';
+
+// modificado manualmente
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+
+// adicionados manualmente
+import { ContatoProvider } from '../../providers/contato/contato';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@IonicPage()
+@Component({
+  selector: 'page-contato',
+  templateUrl: 'contato.html',
+})
+export class ContatoPage {
+
+  // criado manualmente
+  titulo : string;
+  form : FormGroup;
+  contato : any;
+
+  // modificado manualmente
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+    private formBuilder: FormBuilder, private provider: ContatoProvider,
+    private toast : ToastController) {
+
+      this.contato = this.navParams.data.contato || {};
+      this.criarForm();
+
+      
+      this.setupPageTitle();
+  }
+
+  // criado manualmente
+  private setupPageTitle() {
+    this.titulo = this.navParams.data.contato ? 'Alterando contato' : 'Novo contato';
+  }
+
+  // criado manualmente
+  criarForm() {
+    this.form = this.formBuilder.group({
+      key: [this.contato.key],
+      nome : [this.contato.nome, Validators.required],
+      tel : [this.contato.tel, Validators.required]
+    })
+  }
+
+  // criado manualmente
+  onSubmit() {
+
+    if(this.form.valid) {
+      this.provider.salvar(this.form.value)
+        .then(() => {
+          this.toast.create( { message: 'Contato salvo com sucesso!', duration : 3000}).present();
+          this.navCtrl.pop();
+        })
+        .catch((e) => {
+          this.toast.create( { message: 'Erro ao salvar contato.', duration : 3000}).present();
+          console.error(e);
+        });
+    }
+
+  }
+}
+
+	Alterar o HTML do arquivo contato.html:
+
+
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>{{ titulo }}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <form [formGroup]="form">
+    <ion-item>
+        <ion-label stacked>Nome</ion-label>
+        <ion-input type="text" formControlName="nome"></ion-input>
+    </ion-item>
+  
+    <ion-item *ngIf="!form.controls.nome.valid && (form.controls.nome.dirty || form.controls.nome.touched)" color="danger">
+      <div [hidden]="!form.controls.nome.errors.required">
+        compo é obrigatório
+      </div>
+    </ion-item>
+
+    <ion-item>
+        <ion-label stacked>Telefone</ion-label>
+        <ion-input type="tel" formControlName="tel"></ion-input>
+    </ion-item>
+  
+    <ion-item *ngIf="!form.controls.tel.valid && (form.controls.tel.dirty || form.controls.tel.touched)" color="danger">
+      <div [hidden]="!form.controls.tel.errors.required">
+        compo é obrigatório
+      </div>
+    </ion-item>
+
+    <div padding>
+      <button ion-button block type="submit" [disabled]="!form.valid"
+        (click)="onSubmit()"> Salvar </button>
+    </div>
+  </form>
+
+</ion-content>
+
+</ion-content>
+
+
+	Abrir o arquivo Home.ts:
+
+conteudo do arquivo:
+
+import { Component } from '@angular/core';
+
+// modificado manualmente
+import { NavController, ToastController } from 'ionic-angular';
+
+// adicionado manualmente
+import { ContatoProvider } from '../../providers/contato/contato';
+import { Observable } from 'rxjs';
+
+@Component({
+  selector: 'page-home',
+  templateUrl: 'home.html'
+})
+export class HomePage {
+
+  // criado manualmente
+  contatos: Observable<any>;
+
+  // modificado manualmente
+  constructor(public navCtrl: NavController, private provider: ContatoProvider,
+    private toast : ToastController) {
+
+      this.contatos = provider.getContatos();
+  }
+
+  // criado manualmente
+  novoContato() {
+    this.navCtrl.push("ContatoPage");
+  }
+
+  // criado manualmente
+  editarContato(contato : any) {
+
+    // Maneira 1
+    this.navCtrl.push("ContatoPage", { contato : contato });
+
+  }
+
+  // criado manualmente
+  removerContato(key : string) {
+
+    this.provider.remover(key)
+      .then(() => {
+        this.toast.create({ message : "Contato removido com sucesso!", duration : 3000}).present();
+      })
+      .catch((e) => {
+        this.toast.create({ message : "Erro ao remover o contato.", duration : 3000}).present();
+        console.log(e);
+      });
+  }
+
+} // fim do código
+
+
+	Modificar o HTML do arquivo home.html:
+
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      Contatos
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <!-- criado manualmente ~ listar os contatos salvos no banco -->
+  <ion-list>
+    <!-- parametro async necessário por causa do firebase -->
+    <ion-item-sliding *ngFor="let contato of contatos | async">
+      
+        <ion-item>
+            <h1> {{ contato.nome }} </h1>
+            <p> {{ contato.tel }} </p>
+        </ion-item>
+
+        <!-- grupo de botões -->
+        <ion-item-options side="left">
+
+          <!-- botão para editar contato -->
+          <button ion-button color="secondary" (click)="editarContato(contato)">
+              <ion-icon name="create"></ion-icon>
+          </button>
+
+          <!-- botão para remover contato -->
+          <button ion-button color="danger" (click)="removerContato(contato.key)">
+              <ion-icon name="trash"></ion-icon>
+          </button>
+        </ion-item-options>
+
+    </ion-item-sliding>
+  </ion-list>
+
+    <!-- criado manualmente ~ botão para acessar a pagina de contato -->
+  <ion-fab bottom right>
+    <button ion-fab color="primary" (click)="novoContato()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+
+</ion-content>
+
+	Caso ocorra um erro na Home do aplicativo, execute os comandos:
+
+\> npm uninstall firebase --save
+
+\> npm uninstall angularfire2 --save
+
+\> npm i firebase@4.6.0 angularfire2@5.0.0-rc.3 --save
+
+	Execute o aplicativo:
+
+\> ionic serve
+
+	Observações:
+
+	Para acessar os botões de editar e remover é necessário arrstar o contato para a direita.
+
+
+
+
