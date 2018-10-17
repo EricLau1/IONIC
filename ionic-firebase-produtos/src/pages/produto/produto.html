@@ -1,0 +1,55 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title> {{ titulo }}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <form [formGroup]="form">
+
+    <ion-item>
+      <ion-label stacked> Descrição </ion-label>
+      <ion-input type="text" formControlName="descricao"></ion-input>
+    </ion-item>
+
+    <!-- Mensagem de validação para o campo da descrição -->
+    <ion-item *ngIf="!form.controls.descricao.valid && (form.controls.descricao.dirty || form.controls.descricao.touched)" color="danger">
+      <div [hidden]="!form.controls.descricao.errors.required">
+        campo obrigatório!
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked> Quantidade </ion-label>
+      <ion-input type="number" formControlName="quantidade"></ion-input>
+    </ion-item>
+
+    <!-- Mensagem de validação para o campo da quantidade -->
+    <ion-item *ngIf="!form.controls.quantidade.valid && (form.controls.quantidade.dirty || form.controls.quantidade.touched)" color="danger">
+      <div [hidden]="!form.controls.quantidade.errors.required">
+        campo obrigatório!
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked> Valor </ion-label>
+      <ion-input type="number" formControlName="valor"></ion-input>
+    </ion-item>
+
+    <!-- Mensagem de validação para o campo da descricação -->
+    <ion-item *ngIf="!form.controls.valor.valid && (form.controls.valor.dirty || form.controls.valor.touched)" color="danger">
+      <div [hidden]="!form.controls.valor.errors.required">
+        campo obrigatório!
+      </div>
+    </ion-item>
+
+    <div padding>
+      <button ion-button block type="submit" [disabled]="!form.valid" (click)="onSubmit()"> gravar </button>
+    </div>
+
+  </form>
+
+</ion-content>

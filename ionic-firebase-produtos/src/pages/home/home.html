@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Ionic Firebase
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-list>
+
+    <ion-item-sliding *ngFor="let produto of produtos | async" >
+
+      <ion-item>
+        <h1>{{ produto.descricao }}</h1>
+        <p>{{ produto.quantidade }} - {{ produto.valor }}</p>
+      </ion-item>
+
+      <ion-item-options>
+
+        <button ion-button color="info" (click)="editProduto(produto)" >
+          <ion-icon name="create"></ion-icon>
+        </button>
+
+        <button ion-button color="danger" (click)="remove(produto.key)">
+          <ion-icon name="trash"></ion-icon>
+        </button>
+
+      </ion-item-options>
+
+    </ion-item-sliding>
+  </ion-list>
+
+
+  <ion-fab bottom right>
+    <button ion-fab color="primary" (click)="addProduto()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>
