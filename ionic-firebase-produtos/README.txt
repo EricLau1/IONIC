@@ -40,12 +40,12 @@ import { ProdutoProvider } from '../providers/produto/produto';
 
       /* código gerado da api do Firebase */
 
-      apiKey: "AIzaSyA8gkanaIl54HK3wJ4jpNK8fGoIb39Wm-Q",
-      authDomain: "ionic-crud-e10bf.firebaseapp.com",
-      databaseURL: "https://ionic-crud-e10bf.firebaseio.com",
-      projectId: "ionic-crud-e10bf",
-      storageBucket: "ionic-crud-e10bf.appspot.com",
-      messagingSenderId: "416412136563"
+      apiKey: "SUA API KEY",
+      authDomain: "SEU DOMAIN",
+      databaseURL: "SUA URL",
+      projectId: "SEU PROJECT ID",
+      storageBucket: "SEU STORAGE",
+      messagingSenderId: "SEU MSID"
 
     }),
     AngularFireDatabaseModule // adicionado manualmente
