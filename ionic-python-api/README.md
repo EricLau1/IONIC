@@ -20,19 +20,19 @@ Executar a Python API:
 
 URL's DISPONÍVEIS:
 
-# http://localhost:5000/          ~ lista produtos [retorna uma lista de produtos] -> GET
+*http://localhost:5000/          ~ lista produtos [retorna uma lista de produtos] -> GET*
 
-# http://localhost:5000/produto/1 ~ recupera produto pelo numero do id [retorna o produto encontrado ou uma mensagem] -> GET
+*http://localhost:5000/produto/1 ~ recupera produto pelo numero do id [retorna o produto encontrado ou uma mensagem] -> GET*
 
-# http://localhost:5000/produto   ~ cria um nome produto [retorna uma lista de produtos ou uma mensagem] -> POST
+*http://localhost:5000/produto   ~ cria um nome produto [retorna uma lista de produtos ou uma mensagem] -> POST*
 
-# http://localhost:5000/update/1  ~ atualiza um produto pelo id [retorna o item atualizado ou uma mensagem] -> PUT
+*http://localhost:5000/update/1  ~ atualiza um produto pelo id [retorna o item atualizado ou uma mensagem] -> PUT*
 
-# http://localhost:5000/delete/1  ~ delete um item pelo id [retorna uma lista de produtos ou mensagem] -> DELETE
+*http://localhost:5000/delete/1  ~ delete um item pelo id [retorna uma lista de produtos ou mensagem] -> DELETE*
 
-# http://localhost:5000/register  ~ cadastra um novo usuário [retona uma mensagem de OK ou Failed] -> POST
+*http://localhost:5000/register  ~ cadastra um novo usuário [retona uma mensagem de OK ou Failed] -> POST*
 
-# http://localhost:5000/login     ~ autentica um usuario para logar no sistema [retorna os dados do usuario ou uma mensagem] -> POST
+*http://localhost:5000/login     ~ autentica um usuario para logar no sistema [retorna os dados do usuario ou uma mensagem] -> POST*
 
 IONIC
 
