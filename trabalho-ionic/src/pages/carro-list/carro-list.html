@@ -1,0 +1,45 @@
+<ion-header>
+
+  <ion-navbar color="warning">
+    <ion-title>Lista de Carros</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list>
+  
+    <ion-item-sliding *ngFor="let carro of carros | async">
+
+      <ion-item icon-start>
+        <h1> {{ carro.nome }} </h1>
+        <p padding> 
+          <ion-icon name="aperture" ></ion-icon> {{ carro.marca }} - 
+          <ion-icon name="logo-bitcoin" ></ion-icon> {{ carro.valor}} 
+        </p>
+      </ion-item>
+
+      <ion-item-options>
+
+        <button ion-button color="info" (click)="editarCarro(carro)" icon-start>
+          Editar <ion-icon name="create"></ion-icon>
+        </button>
+
+        <button ion-button color="danger" (click)="excluirCarro(carro.key)" icon-start>
+          Excluir<ion-icon name="trash"></ion-icon>
+        </button>
+
+      </ion-item-options>
+
+    </ion-item-sliding>
+  
+  </ion-list>
+
+  <ion-fab bottom right>
+    <button ion-fab color="dark" (click)="irParaCarro()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>

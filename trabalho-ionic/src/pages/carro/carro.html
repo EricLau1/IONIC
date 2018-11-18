@@ -1,0 +1,57 @@
+
+<ion-header>
+
+  <ion-navbar color="dark">
+    <ion-title>{{ titulo }}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <form [formGroup]="form">
+
+    <ion-item>
+      <ion-label stacked>Nome</ion-label>
+      <ion-input type="text" formControlName="nome" ></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="!form.controls.nome.valid && (form.controls.nome.dirty || form.controls.nome.touched)" color="danger">
+      <div [hidden]="!form.controls.nome.errors.required">
+        campo obrigatório
+      </div>
+    </ion-item>
+
+    <!-- Fim do Input NOME -->
+
+    <ion-item>
+      <ion-label stacked>Marca</ion-label>
+      <ion-input type="text" formControlName="marca" ></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="!form.controls.marca.valid && (form.controls.marca.dirty || form.controls.marca.touched)" color="danger">
+      <div [hidden]="!form.controls.marca.errors.required">
+        campo obrigatório
+      </div>
+    </ion-item>
+
+    <!-- Fim do Input MARCA -->
+
+    <ion-item>
+      <ion-label stacked>Valor R$</ion-label>
+      <ion-input type="number" formControlName="valor" ></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="!form.controls.valor.valid && (form.controls.valor.dirty || form.controls.valor.touched)" color="danger">
+      <div [hidden]="!form.controls.valor.errors.required">
+        campo obrigatório
+      </div>
+    </ion-item>
+
+    <div padding>
+      <button ion-button block color="warning" type="submit" [disabled]="!form.valid" (click)="onSubmit()" > Gravar </button>
+    </div>
+  </form>
+
+</ion-content>

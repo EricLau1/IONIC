@@ -1,0 +1,42 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>Lista de Clientes</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list>
+  
+    <ion-item-sliding *ngFor="let cliente of clientes | async">
+
+      <ion-item>
+        <h1> {{ cliente.nome }} </h1>
+        <p>{{ cliente.email }}</p>
+      </ion-item>
+
+      <ion-item-options>
+
+        <button ion-button color="info" (click)="editarCliente(cliente)">
+          Editar <ion-icon name="create"></ion-icon>
+        </button>
+
+        <button ion-button color="danger" (click)="excluirCliente(cliente.key)">
+          Excluir<ion-icon name="trash"></ion-icon>
+        </button>
+
+      </ion-item-options>
+
+    </ion-item-sliding>
+  
+  </ion-list>
+
+  <ion-fab bottom right>
+    <button ion-fab color="primary" (click)="irParaCliente()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>
